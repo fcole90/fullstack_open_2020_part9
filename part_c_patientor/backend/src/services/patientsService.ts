@@ -34,7 +34,7 @@ const addPatient = (newPatient: NewPatient): PublicPatient  => {
     id: uuid(),
     ...assertNewPatient(newPatient)
   };
-  patients.concat(addedPatient);
+  patients.push(addedPatient);
   return addedPatient;
 };
 
