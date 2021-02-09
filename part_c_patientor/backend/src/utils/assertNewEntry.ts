@@ -1,7 +1,8 @@
 import { Entry, NewEntry, Diagnosis, BaseEntry, HealthCheckEntry,
    HealthCheckRating, HospitalEntry, Discharge, 
    OccupationalHealthcareEntry, SickLeave, UnionOmit } from '../types';
-import { assertNotNone, assertIsString, assertIsDateString, assertIsArray, isString, AssertionError, assertNever } from './BasicTypesAssertions';
+import { assertNotNone, assertIsString, assertIsDateString, assertIsArray, 
+  isString, AssertionError, assertNever, assertIsNumber, isNumber } from './BasicTypesAssertions';
 
 export const assertDiagnosis = (x: unknown): Diagnosis => {
   const object = assertNotNone(x, 'diagnosis') as Diagnosis;
@@ -35,7 +36,7 @@ const assertBaseEntry = (x: unknown): UnionOmit<BaseEntry, 'id'>  => {
 
 
 const assertHealthCheckRating = (x: unknown): HealthCheckRating => {
-  if (!Object.values(HealthCheckRating).includes(assertIsString(x))) {
+  if (!Object.values(HealthCheckRating).filter(isNumber).includes(assertIsNumber(x))) {
     throw new AssertionError(`${x as string} is not an HealthCheckRating value: ${Object.values(HealthCheckRating).join(' | ')}`);
   }
   return x as HealthCheckRating;

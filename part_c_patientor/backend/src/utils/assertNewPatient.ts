@@ -29,7 +29,8 @@ const assertNewPatient = (x: unknown): NewPatient  => {
     ssn: assertIsString(object.ssn),
     gender: assertIsGender(object.gender),
     occupation: assertIsString(object.occupation),
-    entries: object.entries.map(entry => assertIsEntry(entry))
+    entries: object.entries === undefined ? [] 
+    : object.entries.map(entry => assertIsEntry(entry))
   };
 };
 

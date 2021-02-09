@@ -48,9 +48,17 @@ export const assertIsString = (x: unknown): string => {
   return x;
 };
 
+export const isNumber = (x: unknown): x is number => {
+  return typeof x === 'number' || x instanceof Number;
+};
+
+export const assertIsNumber = (x: unknown): number => {
+  if (!isNumber(x)) { throw new AssertionError(`${x as string} is not a number`); }
+  return x;
+};
 
 export const isDate = (x: unknown): x is Date => {
-  return (!(!x) && isString(x) && Boolean(Date.parse(x)));
+  return (!(!x) && isString(x) && !isNaN(Date.parse(x)));
 };
 
 export const assertIsDate = (x: unknown): Date => {

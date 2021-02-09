@@ -1,6 +1,5 @@
 import express from 'express';
 import patientsService from '../services/patientsService';
-import assertNewPatient from '../utils/assertNewPatient';
 
 const router = express.Router();
 
@@ -18,14 +17,16 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    res.send(patientsService.addPatient(assertNewPatient(req.body)));
+    res.send(patientsService.addPatient(req.body));
   } catch (error) {
     res.status(400).send((error as Error).message);
+    throw error;
   }
 });
 
 router.post('/:id/entries', (req, res) => {
   try {
+    console.log(req.body);
     res.send(patientsService.addEntryToPatient(req.params.id, req.body));
   } catch (error) {
     if ((error as Error).message.startsWith("Could not find any")) {

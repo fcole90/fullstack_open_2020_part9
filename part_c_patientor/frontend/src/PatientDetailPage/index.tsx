@@ -8,8 +8,9 @@ import EntryDetails from '../components/EntryDetails';
 import DiagnosesList from '../components/DiagnosesList';
 import { useStateValue, updatePatient } from '../state';
 import { apiBaseUrl } from '../constants';
-import { Diagnosis, Patient, Entry, TemporaryFormType } from '../types';
+import { Diagnosis, Patient } from '../types';
 import AddEntryModal from '../AddEntryModal';
+import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 
 const PatientDetailPage: React.FC = () => {
   const { id: patientIdMatch } = useParams<{ id: string }>();
@@ -26,15 +27,12 @@ const PatientDetailPage: React.FC = () => {
     setError(undefined);
   };
 
-  const submitNewEntry = async (values: Entry) => {
+  const submitNewEntry = async (data: EntryFormValues) => {
+    console.log('submitNewEntry:', data);
+    
     try {
       const { data: updatedPatient } = await axios.post<Patient>(
-        `${apiBaseUrl}/patients/${patient.id}/entries`,
-        {
-          ...patient,
-          entries: [...patient.entries, values]
-        }
-      );
+        `${apiBaseUrl}/patients/${patient.id}/entries`, data);
       dispatch(updatePatient(updatedPatient));
       closeModal();
     } catch (e) {
@@ -85,12 +83,11 @@ const PatientDetailPage: React.FC = () => {
       <AddEntryModal
         
         modalOpen={modalOpen}
-        onSubmit={(x) => {console.log(x);}}
+        onSubmit={submitNewEntry}
         error={error}
         onClose={closeModal}
       />
       <Button style={{marginTop: 1 + 'em'}} onClick={openModal}>Add New Entry</Button>
-      <Button style={{marginTop: 1 + 'em'}} onClick={() => setError("Oops")}>Error</Button>
     </div>
   );
 };

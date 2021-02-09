@@ -3,34 +3,28 @@ import { ErrorMessage, Field, FieldProps, FormikProps } from 'formik';
 import { Dropdown, DropdownProps, Form } from 'semantic-ui-react';
 import { Diagnosis, Gender, Entry } from '../types';
 
-// structure of a single option
-export type GenderOption = {
-  value: Gender;
-  label: string;
-};
 
-// props for select field component
-type GenderSelectFieldProps = {
-  name: string;
+// --- Generic ---
+export interface SelectOption {
+  value: string;
   label: string;
-  options: GenderOption[];
-};
+}
 
-// props for select field component
-type SelectFieldProps<T> = {
+export interface SelectFieldProps<T extends SelectOption> {
   name: string;
   label: string;
   options: T[];
-};
+}
 
-export const SelectField = <T, >({
+
+export const SelectField = <T extends SelectOption, >({
   name,
   label,
-  options
-}: SelectFieldProps<T>): React.FC<SelectFieldProps<T>> => (
+  options,
+}: SelectFieldProps<T>) => (
   <Form.Field>
     <label>{label}</label>
-    <Field as="select" name={name} className="ui dropdown">
+    <Field as="select" name={name} className="ui dropdown"  >
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label || option.value}
@@ -40,47 +34,32 @@ export const SelectField = <T, >({
   </Form.Field>
 );
 
-// export const GenderSelectField: React.FC<GenderSelectFieldProps> = ({
-//   name,
-//   label,
-//   options
-// }: GenderSelectFieldProps) => (
-//   <Form.Field>
-//     <label>{label}</label>
-//     <Field as="select" name={name} className="ui dropdown">
-//       {options.map(option => (
-//         <option key={option.value} value={option.value}>
-//           {option.label || option.value}
-//         </option>
-//       ))}
-//     </Field>
-//   </Form.Field>
-// );
+// -------------
 
 
+// Gender
+export interface GenderOption extends SelectOption {
+  value: Gender;
+}
 
-type TypeSelectFieldProps = {
-  name: string;
-  label: string;
-  options: Entry['type'][];
-};
-
-export const GenderSelectField = ({
-  name,
-  label,
-  options
-}: GenderSelectFieldProps): React.FC<GenderSelectFieldProps> => (
-  <Form.Field>
-    <label>{label}</label>
-    <Field as="select" name={name} className="ui dropdown">
-      {options.map(option => (
-        <option key={option.value} value={option.value}>
-          {option.label || option.value}
-        </option>
-      ))}
-    </Field>
-  </Form.Field>
+export const GenderSelectField: React.FC<SelectFieldProps<GenderOption>> = (props) => (
+  SelectField<GenderOption>(props)
 );
+// -------------
+
+
+
+// Entry['type']
+export interface EntryTypeOption extends SelectOption {
+  value: Entry['type'];
+}
+
+export const EntryTypeSelectField: React.FC<SelectFieldProps<EntryTypeOption>> = (props) => (
+  SelectField<EntryTypeOption>(props)
+);
+// -------------
+
+
 
 interface TextProps extends FieldProps {
   label: string;
@@ -98,6 +77,29 @@ export const TextField: React.FC<TextProps> = ({
     <div style={{ color:'red' }}>
       <ErrorMessage name={field.name} />
     </div>
+  </Form.Field>
+);
+
+interface TextFieldManagedProps extends FieldProps {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void);
+}
+
+export const TextFieldManaged: React.FC<TextFieldManagedProps> = ({
+  field,
+  label,
+  placeholder,
+  value,
+  onChange
+}) => (
+  <Form.Field>
+  <label>{label}</label>
+  <input type='text' placeholder={placeholder} value={value} onChange={onChange}/>
+  <div style={{ color:'red' }}>
+    <ErrorMessage name={field.name} />
+  </div>
   </Form.Field>
 );
 
